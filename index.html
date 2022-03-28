@@ -28,8 +28,6 @@
                 <div id="local_stream" class="video-placeholder"></div>
                 <div id="local_video_info" class="video-profile hide"></div>
                 <div id="video_autoplay_local" class="autoplay-fallback hide"></div>
-
-
             </div>
         </div>
     </div>
@@ -54,6 +52,7 @@
             client: null
         };
 
+
         let options = {
             // Pass your App ID here.
             appId: "89011a2d75274a85903cdcc1c6f926ee",
@@ -62,7 +61,7 @@
             // Pass your temp token here.
             token: "00689011a2d75274a85903cdcc1c6f926eeIADdJPSLTtD/y6TJw/9ngOnqYMQj6Q7t4k0F9aJ628PoZpr8kDgAAAAAIgDR1hyr/I1CYgQAAQD6jUJiAgD6jUJiAwD6jUJiBAD6jUJi",
             // Set the user ID.
-            uid: null
+
         };
 
         async function startBasicCall() {
@@ -167,6 +166,11 @@
                 rtc.localVideoTrack.setEnabled(false);
 
             }
+
+
+
+
+
         }
 
         startBasicCall()
