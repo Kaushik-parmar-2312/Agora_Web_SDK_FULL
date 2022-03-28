@@ -2,27 +2,28 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>Basic Communication</title>
     <!-- <link rel="stylesheet" href="./assets/common.css" /> -->
+
+    <!-- CSS only -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous" />
 </head>
 
-<body id="join" class="agora-theme">
+<body class="agora-theme">
     <div class="navbar-fixed">
         <nav class="agora-navbar">
             <div class="nav-wrapper agora-primary-bg valign-wrapper">
                 <h5 class="left-align">Basic Communication</h5>
-
             </div>
         </nav>
     </div>
 
     <h2 class="left-align">Agora Video Web SDK Quickstart</h2>
 
-
-    <div class="col s7">
+    <!-- <div class="col s7">
         <div class="video-grid" id="video">
             <div class="video-view">
                 <div id="local_stream" class="video-placeholder"></div>
@@ -30,16 +31,16 @@
                 <div id="video_autoplay_local" class="autoplay-fallback hide"></div>
             </div>
         </div>
-    </div>
+    </div> -->
 
-    <p class="row"></p>
+    <!-- <p class="row"></p> -->
 
-    <button type="button" id="voice">mute voice</button>
-    <button type="button" id="vf">video off</button>
+    <i id="video-off" class="fa fa-video"></i>
+    <i id="video-on" style="display: none" class="fa fa-video-slash"></i>
+    <i id="voice-mute" class="fa fa-microphone"></i>
+    <i id="voice-unmute" style="display: none" class="fa fa-microphone-alt-slash"></i>
+
     <button type="button" id="leave">LEAVE</button>
-
-
-
 
     <script src="vendor/jquery.min.js"></script>
     <script src="vendor/materialize.min.js"></script>
@@ -50,9 +51,8 @@
         let rtc = {
             localAudioTrack: "camera-0",
             localVideoTrack: "microphone-0",
-            client: null
+            client: null,
         };
-
 
         let options = {
             // Pass your App ID here.
@@ -62,16 +62,14 @@
             // Pass your temp token here.
             token: "00689011a2d75274a85903cdcc1c6f926eeIADdJPSLTtD/y6TJw/9ngOnqYMQj6Q7t4k0F9aJ628PoZpr8kDgAAAAAIgDR1hyr/I1CYgQAAQD6jUJiAgD6jUJiAwD6jUJiBAD6jUJi",
             // Set the user ID.
-            uid: 8854
-
+            uid: null,
         };
-
 
         async function startBasicCall() {
             // Create an AgoraRTCClient object.
             rtc.client = AgoraRTC.createClient({
                 mode: "rtc",
-                codec: "vp8"
+                codec: "vp8",
             });
 
             // Listen for the "user-published" event, from which you can get an AgoraRTCRemoteUser object.
@@ -88,7 +86,8 @@
                     const remotePlayerContainer = document.createElement("p");
                     // Specify the ID of the DIV container. You can use the uid of the remote user.
                     remotePlayerContainer.id = user.uid.toString();
-                    remotePlayerContainer.textContent = "Remote user " + user.uid.toString();
+                    remotePlayerContainer.textContent =
+                        "Remote user " + user.uid.toString();
                     remotePlayerContainer.style.width = "640px";
                     remotePlayerContainer.style.height = "480px";
                     document.body.append(remotePlayerContainer);
@@ -110,19 +109,22 @@
                 }
 
                 // Listen for the "user-unpublished" event
-                rtc.client.on("user-unpublished", user => {
+                rtc.client.on("user-unpublished", (user) => {
                     // Get the dynamically created DIV container.
                     const remotePlayerContainer = document.getElementById(user.uid);
                     // Destroy the container.
                     remotePlayerContainer.remove();
                 });
-
             });
 
-            document.getElementById("join").onload = async function() {
-
+            window.onload = async function() {
                 // Join an RTC channel.
-                await rtc.client.join(options.appId, options.channel, options.token, options.uid);
+                await rtc.client.join(
+                    options.appId,
+                    options.channel,
+                    options.token,
+                    options.uid
+                );
                 // Create a local audio track from the audio sampled by a microphone.
                 rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
                 // Create a local video track from the video captured by a camera.
@@ -142,7 +144,7 @@
                 // Pass the DIV container and the SDK dynamically creates a player in the container for playing the local video track.
                 rtc.localVideoTrack.play(localPlayerContainer);
                 console.log("publish success!");
-            }
+            };
 
             document.getElementById("leave").onclick = async function() {
                 // Destroy the local audio and video tracks.
@@ -150,7 +152,7 @@
                 rtc.localVideoTrack.close();
 
                 // Traverse all remote users.
-                rtc.client.remoteUsers.forEach(user => {
+                rtc.client.remoteUsers.forEach((user) => {
                     // Destroy the dynamically created DIV containers.
                     const playerContainer = document.getElementById(user.uid);
                     playerContainer && playerContainer.remove();
@@ -158,26 +160,52 @@
 
                 // Leave the channel.
                 await rtc.client.leave();
-            }
-            document.getElementById("voice").onclick = async function() {
-
+            };
+            document.getElementById("voice-mute").onclick = async function() {
                 // Mutes the remote stream.
                 rtc.localAudioTrack.setEnabled(false);
-            }
 
-            document.getElementById("vf").onclick = async function() {
+                document.getElementById("voice-mute").style.display = "none"
+                document.getElementById("voice-unmute").style.display = "block"
+
+                console.log("voice mute");
+            };
+
+
+            document.getElementById("voice-unmute").onclick = async function() {
+                // Unmutes the remote stream.
+                rtc.localAudioTrack.setEnabled(true);
+
+                document.getElementById("voice-mute").style.display = "block"
+                document.getElementById("voice-unmute").style.display = "none"
+
+
+                console.log("voice unmute");
+            };
+
+
+            document.getElementById("video-off").onclick = async function() {
                 rtc.localVideoTrack.setEnabled(false);
 
-            }
+                document.getElementById("video-on").style.display = "block"
+                document.getElementById("video-off").style.display = "none"
 
 
+                console.log("Video off ");
+            };
 
+            document.getElementById("video-on").onclick = async function() {
+                rtc.localVideoTrack.setEnabled(true);
 
+                document.getElementById("video-on").style.display = "none"
+                document.getElementById("video-off").style.display = "block"
 
+                console.log("video ON");
+            };
         }
 
-        startBasicCall()
+        startBasicCall();
     </script>
-
+</body>
 
 </html>
