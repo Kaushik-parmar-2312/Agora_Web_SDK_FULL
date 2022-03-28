@@ -32,6 +32,7 @@
         </div>
     </div>
 
+    <p class="row"></p>
 
     <button type="button" id="voice">mute voice</button>
     <button type="button" id="vf">video off</button>
@@ -61,8 +62,10 @@
             // Pass your temp token here.
             token: "00689011a2d75274a85903cdcc1c6f926eeIADdJPSLTtD/y6TJw/9ngOnqYMQj6Q7t4k0F9aJ628PoZpr8kDgAAAAAIgDR1hyr/I1CYgQAAQD6jUJiAgD6jUJiAwD6jUJiBAD6jUJi",
             // Set the user ID.
+            uid: 8854
 
         };
+
 
         async function startBasicCall() {
             // Create an AgoraRTCClient object.
@@ -82,7 +85,7 @@
                     // Get the RemoteVideoTrack object in the AgoraRTCRemoteUser object.
                     const remoteVideoTrack = user.videoTrack;
                     // Dynamically create a container in the form of a DIV element for playing the remote video track.
-                    const remotePlayerContainer = document.createElement("div");
+                    const remotePlayerContainer = document.createElement("p");
                     // Specify the ID of the DIV container. You can use the uid of the remote user.
                     remotePlayerContainer.id = user.uid.toString();
                     remotePlayerContainer.textContent = "Remote user " + user.uid.toString();
