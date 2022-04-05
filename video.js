@@ -464,6 +464,9 @@ $(function() {
             unpublish(rtc)
         }
     });
+
+    
+
     // Leeaves the chanenl if someone clicks the leave button
     $("#leave").on("click", function(e) {
         console.log("leave")

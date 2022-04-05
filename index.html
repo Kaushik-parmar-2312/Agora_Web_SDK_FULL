@@ -6,11 +6,29 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>Basic Communication</title>
-    <!-- <link rel="stylesheet" href="./assets/common.css" /> -->
+    <link rel="stylesheet" href="./assets/common.css" />
 
     <!-- CSS only -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous" />
+
+
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
+
+<style>
+    .flex-container {
+        display: flex;
+    }
+    
+    .flex-child {
+        flex: 1;
+    }
+    
+    .flex-child:first-child {
+        margin-right: 2px;
+    }
+</style>
 
 <body class="agora-theme">
     <div class="navbar-fixed">
@@ -23,18 +41,6 @@
 
     <h2 class="left-align">Agora Video Web SDK Quickstart</h2>
 
-    <!-- <div class="col s7">
-        <div class="video-grid" id="video">
-            <div class="video-view">
-                <div id="local_stream" class="video-placeholder"></div>
-                <div id="local_video_info" class="video-profile hide"></div>
-                <div id="video_autoplay_local" class="autoplay-fallback hide"></div>
-            </div>
-        </div>
-    </div> -->
-
-    <!-- <p class="row"></p> -->
-
     <i id="video-off" class="fa fa-video"></i>
     <i id="video-on" style="display: none" class="fa fa-video-slash"></i>
     <i id="voice-mute" class="fa fa-microphone"></i>
@@ -42,15 +48,34 @@
 
     <button type="button" id="leave">LEAVE</button>
 
+    <p class="info-toast msg" id="demo"></p>
+    <div class="flex-container" id="video">
+
+        <div id="local" class="flex-child ">
+
+        </div>
+
+        <div id="remote" class="flex-child ">
+
+        </div>
+
+    </div>
+
+
+
     <script src="vendor/jquery.min.js"></script>
     <script src="vendor/materialize.min.js"></script>
 
+    <script src="https://download.agora.io/sdk/release/AgoraRTC_N.js"></script>
+
     <script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.10.2.js"></script>
+
+
 
     <script>
         let rtc = {
-            localAudioTrack: "camera-0",
-            localVideoTrack: "microphone-0",
+            localAudioTrack: null,
+            localVideoTrack: null,
             client: null,
         };
 
@@ -60,12 +85,17 @@
             // Set the channel name.
             channel: "krishna",
             // Pass your temp token here.
-            token: "00689011a2d75274a85903cdcc1c6f926eeIADdJPSLTtD/y6TJw/9ngOnqYMQj6Q7t4k0F9aJ628PoZpr8kDgAAAAAIgDR1hyr/I1CYgQAAQD6jUJiAgD6jUJiAwD6jUJiBAD6jUJi",
+
+            role: "host",
+
+            token: "00689011a2d75274a85903cdcc1c6f926eeIAAe1ClNqAPqprFHsTMvmZiRyrippbFPMQyCkyZQLZB0FZr8kDgAAAAAIgDR1hyrynpFYgQAAQDJekViAgDJekViAwDJekViBADJekVi",
+
             // Set the user ID.
-            uid: null,
+            uid: null
         };
 
         async function startBasicCall() {
+
             // Create an AgoraRTCClient object.
             rtc.client = AgoraRTC.createClient({
                 mode: "rtc",
@@ -83,17 +113,24 @@
                     // Get the RemoteVideoTrack object in the AgoraRTCRemoteUser object.
                     const remoteVideoTrack = user.videoTrack;
                     // Dynamically create a container in the form of a DIV element for playing the remote video track.
-                    const remotePlayerContainer = document.createElement("p");
+                    const remotePlayerContainer = document.createElement('div');
                     // Specify the ID of the DIV container. You can use the uid of the remote user.
+
                     remotePlayerContainer.id = user.uid.toString();
+                    console.log(remotePlayerContainer.id);
                     remotePlayerContainer.textContent =
                         "Remote user " + user.uid.toString();
-                    remotePlayerContainer.style.width = "640px";
-                    remotePlayerContainer.style.height = "480px";
-                    document.body.append(remotePlayerContainer);
+
+                    remotePlayerContainer.style.width = "400px";
+                    remotePlayerContainer.style.height = "300px";
+
+
+                    //    var div= document.body.append(remotePlayerContainer);
+                    document.getElementById('remote').append(remotePlayerContainer);
 
                     // Play the remote video track.
                     // Pass the DIV container and the SDK dynamically creates a player in the container for playing the remote video track.
+
                     remoteVideoTrack.play(remotePlayerContainer);
 
                     // Or just pass the ID of the DIV container.
@@ -118,7 +155,11 @@
             });
 
             window.onload = async function() {
+                //  console.log("Mann", options);
+                //return false;
+
                 // Join an RTC channel.
+
                 await rtc.client.join(
                     options.appId,
                     options.channel,
@@ -132,17 +173,22 @@
                 // Publish the local audio and video tracks to the RTC channel.
                 await rtc.client.publish([rtc.localAudioTrack, rtc.localVideoTrack]);
                 // Dynamically create a container in the form of a DIV element for playing the local video track.
-                const localPlayerContainer = document.createElement("div");
+
+                const localPlayerContainer = document.createElement('div');
                 // Specify the ID of the DIV container. You can use the uid of the local user.
                 localPlayerContainer.id = options.uid;
                 localPlayerContainer.textContent = "Local user " + options.uid;
-                localPlayerContainer.style.width = "640px";
-                localPlayerContainer.style.height = "480px";
-                document.body.append(localPlayerContainer);
+                localPlayerContainer.class = "flex-child";
+                localPlayerContainer.style.width = "400px";
+                localPlayerContainer.style.height = "300px";
 
+
+                // document.body.append(localPlayerContainer);
+
+                document.getElementById('local').append(localPlayerContainer);
                 // Play the local video track.
                 // Pass the DIV container and the SDK dynamically creates a player in the container for playing the local video track.
-                rtc.localVideoTrack.play(localPlayerContainer);
+                document.getElementById('local').append = rtc.localVideoTrack.play(localPlayerContainer);
                 console.log("publish success!");
             };
 
@@ -168,6 +214,13 @@
                 document.getElementById("voice-mute").style.display = "none"
                 document.getElementById("voice-unmute").style.display = "block"
 
+                document.getElementById('demo').innerHTML = "voice unmute";
+
+                $("#demo").show();
+                setTimeout(function() {
+                    $("#demo").hide();
+                }, 5000);
+
                 console.log("voice mute");
             };
 
@@ -178,6 +231,13 @@
 
                 document.getElementById("voice-mute").style.display = "block"
                 document.getElementById("voice-unmute").style.display = "none"
+
+                document.getElementById('demo').innerHTML = "voice mute";
+
+                $("#demo").show();
+                setTimeout(function() {
+                    $("#demo").hide();
+                }, 5000);
 
 
                 console.log("voice unmute");
@@ -191,6 +251,15 @@
                 document.getElementById("video-off").style.display = "none"
 
 
+                document.getElementById('demo').innerHTML = "video off";
+                $("#demo").show();
+                setTimeout(function() {
+                    $("#demo").hide();
+                }, 5000);
+
+
+
+
                 console.log("Video off ");
             };
 
@@ -199,6 +268,14 @@
 
                 document.getElementById("video-on").style.display = "none"
                 document.getElementById("video-off").style.display = "block"
+
+                document.getElementById('demo').innerHTML = "video on";
+
+                $("#demo").show();
+                setTimeout(function() {
+                    $("#demo").hide();
+                }, 5000);
+
 
                 console.log("video ON");
             };
